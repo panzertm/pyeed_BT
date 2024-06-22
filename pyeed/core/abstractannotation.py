@@ -49,7 +49,7 @@ class AbstractAnnotation(
 
     _repo: Optional[str] = PrivateAttr(default="https://github.com/PyEED/pyeed")
     _commit: Optional[str] = PrivateAttr(
-        default="a0e9dccc3884a24994edb8f3c1730d4808eb8633"
+        default="55d522411a60f2907d2ccb90c6640bf4a66e5352"
     )
 
     _raw_xml_data: Dict = PrivateAttr(default_factory=dict)
