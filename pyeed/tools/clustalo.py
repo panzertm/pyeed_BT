@@ -2,12 +2,14 @@ import io
 from typing import Dict, List
 
 import httpx
+import logging
 from Bio import AlignIO
 from Bio.Align import MultipleSeqAlignment
 from pydantic import PrivateAttr
 
 from pyeed.tools.abstract_tool import AbstractTool, ServiceURL
 
+LOGGER = logging.getLogger(__name__)
 
 class ClustalOmega(AbstractTool):
     """
@@ -45,11 +47,15 @@ class ClustalOmega(AbstractTool):
         """Executes the ClustalOmega service."""
         file = self.create_file(data)
         try:
+            LOGGER.debug(f"Connecting to ClustalOmega service at {self._service_url}.")
             return httpx.post(self._service_url, files=file, timeout=600)
 
         except httpx.ConnectError as connect_error:
             if connect_error.__context__.args[0].errno == 8:
-                self._service_url = self._service_url.replace("clustalo", "localhost")
+                LOGGER.debug(f"ClustalOmega service not reachable at {self._service_url}.")
+                self._service_url = self._service_url.lower().replace("clustalo", "localhost")
+                LOGGER.debug(f"Trying to connect to {self._service_url}.")
+
                 try:
                     return httpx.post(self._service_url, files=file, timeout=600)
                 except httpx.ConnectError as connect_error:

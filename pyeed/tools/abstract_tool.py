@@ -35,7 +35,7 @@ class AbstractTool(BaseModel, ABC):
         shutil.rmtree(self._tempdir_path)
 
     @abstractmethod
-    def run_service(self):
+    def run_service(self, data):
         """Executes the service."""
         pass
 
