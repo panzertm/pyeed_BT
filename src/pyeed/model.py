@@ -443,7 +443,41 @@ class Protein(StrictStructuredNode):
     pairwise_aligned = RelationshipTo(
         "Protein", "PAIRWISE_ALIGNED", model=PairwiseAlignmentResult
     )
+    
+class SuperSecondaryStructure(StrictStructuredNode):
+    accession_id = StringProperty(unique_index=True, required=True)
+    pdb_id = StringProperty()
+    sequence = StringProperty(required=True)
+    supersecondary_type = StringProperty()
+    seq_length = IntegerProperty(required=True)
+    connections_labels = ArrayProperty(StringProperty())
+    embedding = ArrayProperty(
+        FloatProperty(),
+        vector_index=VectorIndex(dimensions=1280),
+    )
 
+class SecondaryStructure(StrictStructuredNode):
+    accession_id = StringProperty(unique_index=True, required=True)
+    pdb_id = StringProperty()
+    sequence = StringProperty(required=True)
+    secondary_type = StringProperty()
+    seq_length = IntegerProperty(required=True)
+    position_in_supersecondary_structure = IntegerProperty()
+    embedding = ArrayProperty(
+        FloatProperty(),
+        vector_index=VectorIndex(dimensions=1280),
+    )
+
+    # Relationships
+    super_secondary = RelationshipTo("SuperSecondaryStructure", "belongs_to")
+    
+class RandomSequence(StrictStructuredNode):
+    accession_id = StringProperty(unique_index=True, required=True)
+    sequence = StringProperty(required=True)
+    embedding = ArrayProperty(
+        FloatProperty(),
+        vector_index=VectorIndex(dimensions=1280),
+    )
 
 class DNA(StrictStructuredNode):
     """A DNA sequence node in the database."""
